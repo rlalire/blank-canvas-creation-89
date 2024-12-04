@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
+import { toast } from "@/components/ui/use-toast";
 
 interface ARPair {
   id: number;
@@ -17,20 +18,63 @@ interface ARViewerProps {
 const ARViewer = ({ pairs, onClose }: ARViewerProps) => {
   useEffect(() => {
     const loadScripts = async () => {
-      const aframeScript = document.createElement("script");
-      aframeScript.src = "https://aframe.io/releases/1.6.0/aframe.min.js";
-      document.head.appendChild(aframeScript);
+      try {
+        console.log("Starting to load AR scripts...");
+        
+        // Load A-Frame first
+        const aframeScript = document.createElement("script");
+        aframeScript.src = "https://aframe.io/releases/1.6.0/aframe.min.js";
+        aframeScript.crossOrigin = "anonymous";
+        
+        const aframeLoaded = new Promise((resolve, reject) => {
+          aframeScript.onload = () => {
+            console.log("A-Frame loaded successfully");
+            resolve(true);
+          };
+          aframeScript.onerror = (error) => {
+            console.error("Error loading A-Frame:", error);
+            reject(new Error("Failed to load A-Frame"));
+          };
+        });
 
-      await new Promise(resolve => aframeScript.onload = resolve);
+        document.head.appendChild(aframeScript);
+        await aframeLoaded;
 
-      const mindarScript = document.createElement("script");
-      mindarScript.src = "https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js";
-      document.head.appendChild(mindarScript);
+        // Load MindAR after A-Frame
+        const mindarScript = document.createElement("script");
+        mindarScript.src = "https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js";
+        mindarScript.crossOrigin = "anonymous";
+        
+        const mindarLoaded = new Promise((resolve, reject) => {
+          mindarScript.onload = () => {
+            console.log("MindAR loaded successfully");
+            resolve(true);
+          };
+          mindarScript.onerror = (error) => {
+            console.error("Error loading MindAR:", error);
+            reject(new Error("Failed to load MindAR"));
+          };
+        });
+
+        document.head.appendChild(mindarScript);
+        await mindarLoaded;
+
+        console.log("All AR scripts loaded successfully");
+      } catch (error) {
+        console.error("Error in loadScripts:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load AR components. Please try again.",
+          variant: "destructive",
+        });
+        onClose();
+      }
     };
 
     loadScripts();
 
     return () => {
+      console.log("Cleaning up AR scripts...");
       const scripts = document.querySelectorAll("script");
       scripts.forEach(script => {
         if (script.src.includes("aframe") || script.src.includes("mind-ar")) {
@@ -38,19 +82,22 @@ const ARViewer = ({ pairs, onClose }: ARViewerProps) => {
         }
       });
     };
-  }, []);
+  }, [onClose]);
 
   useEffect(() => {
     const setupAREvents = () => {
+      console.log("Setting up AR events...");
       const sceneEl = document.querySelector("a-scene");
       const videos = document.querySelectorAll("video");
 
       if (sceneEl) {
         sceneEl.addEventListener("targetFound", () => {
+          console.log("Target found, playing videos");
           videos.forEach(video => video.play());
         });
 
         sceneEl.addEventListener("targetLost", () => {
+          console.log("Target lost, pausing videos");
           videos.forEach(video => video.pause());
         });
       }
@@ -58,6 +105,7 @@ const ARViewer = ({ pairs, onClose }: ARViewerProps) => {
 
     const checkScriptsLoaded = setInterval(() => {
       if (window.AFRAME && window.MINDAR) {
+        console.log("Scripts detected as loaded, setting up events");
         setupAREvents();
         clearInterval(checkScriptsLoaded);
       }

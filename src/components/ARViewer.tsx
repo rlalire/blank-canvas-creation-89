@@ -14,6 +14,13 @@ interface ARViewerProps {
   onClose: () => void;
 }
 
+declare global {
+  interface Window {
+    AFRAME: any;
+    MINDAR: any;
+  }
+}
+
 const ARViewer = ({ pairs, onClose }: ARViewerProps) => {
   useEffect(() => {
     // Injecter les scripts nécessaires

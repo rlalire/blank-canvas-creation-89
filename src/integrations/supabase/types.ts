@@ -9,6 +9,30 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      ar_pairs: {
+        Row: {
+          created_at: string
+          id: number
+          target_image_path: string
+          title: string
+          video_path: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          target_image_path: string
+          title: string
+          video_path: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          target_image_path?: string
+          title?: string
+          video_path?: string
+        }
+        Relationships: []
+      }
       realitiesapp: {
         Row: {
           created_at: string

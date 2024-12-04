@@ -25,7 +25,9 @@ const Index = () => {
       return data.map((pair) => ({
         id: pair.id,
         title: pair.title,
-        targetImage: pair.target_image_path,
+        targetImage: supabase.storage
+          .from("ar_assets")
+          .getPublicUrl(pair.target_image_path).data.publicUrl,
         video: supabase.storage
           .from("ar_assets")
           .getPublicUrl(pair.video_path).data.publicUrl,

@@ -25,21 +25,26 @@ const ARViewer = ({ pairs, onClose }: ARViewerProps) => {
   useEffect(() => {
     // Injecter les scripts nécessaires
     const loadScripts = async () => {
+      console.log("Loading scripts...");
       const aframeScript = document.createElement("script");
       aframeScript.src = "https://aframe.io/releases/1.6.0/aframe.min.js";
       document.head.appendChild(aframeScript);
 
       await new Promise(resolve => aframeScript.onload = resolve);
+      console.log("A-Frame loaded");
 
       const mindarScript = document.createElement("script");
       mindarScript.src = "https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js";
       document.head.appendChild(mindarScript);
+      
+      await new Promise(resolve => mindarScript.onload = resolve);
+      console.log("MindAR loaded");
     };
 
     loadScripts();
 
     return () => {
-      // Nettoyer les scripts lors du démontage
+      console.log("Cleaning up scripts...");
       const scripts = document.querySelectorAll("script");
       scripts.forEach(script => {
         if (script.src.includes("aframe") || script.src.includes("mind-ar")) {
@@ -52,15 +57,18 @@ const ARViewer = ({ pairs, onClose }: ARViewerProps) => {
   useEffect(() => {
     // Configurer les événements AR après le chargement des scripts
     const setupAREvents = () => {
+      console.log("Setting up AR events...");
       const sceneEl = document.querySelector("a-scene");
       const videos = document.querySelectorAll("video");
 
       if (sceneEl) {
         sceneEl.addEventListener("targetFound", () => {
+          console.log("Target found!");
           videos.forEach(video => video.play());
         });
 
         sceneEl.addEventListener("targetLost", () => {
+          console.log("Target lost!");
           videos.forEach(video => video.pause());
         });
       }
@@ -69,6 +77,7 @@ const ARViewer = ({ pairs, onClose }: ARViewerProps) => {
     // Attendre que les scripts soient chargés
     const checkScriptsLoaded = setInterval(() => {
       if (window.AFRAME && window.MINDAR) {
+        console.log("Scripts loaded, setting up AR...");
         setupAREvents();
         clearInterval(checkScriptsLoaded);
       }
@@ -76,6 +85,9 @@ const ARViewer = ({ pairs, onClose }: ARViewerProps) => {
 
     return () => clearInterval(checkScriptsLoaded);
   }, []);
+
+  console.log("AR Pairs:", pairs);
+  console.log("Target Image URL:", pairs[0]?.targetImage);
 
   return (
     <div className="fixed inset-0 bg-black">

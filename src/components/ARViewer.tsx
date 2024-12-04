@@ -75,6 +75,7 @@ const ARViewer = ({ pairs, onClose }: ARViewerProps) => {
 
     return () => {
       console.log("Cleaning up AR scripts...");
+      // Clean up scripts when component unmounts
       const scripts = document.querySelectorAll("script");
       scripts.forEach(script => {
         if (script.src.includes("aframe") || script.src.includes("mind-ar")) {
@@ -114,13 +115,28 @@ const ARViewer = ({ pairs, onClose }: ARViewerProps) => {
     return () => clearInterval(checkScriptsLoaded);
   }, []);
 
+  const handleClose = () => {
+    // Pause all videos before closing
+    const videos = document.querySelectorAll("video");
+    videos.forEach(video => video.pause());
+    
+    // Clean up A-Frame scene
+    const scene = document.querySelector("a-scene");
+    if (scene) {
+      scene.parentNode?.removeChild(scene);
+    }
+    
+    // Call the onClose prop
+    onClose();
+  };
+
   return (
     <div className="fixed inset-0 bg-black">
       <Button
         variant="outline"
         size="icon"
-        className="fixed top-4 right-4 z-50"
-        onClick={onClose}
+        className="fixed top-4 right-4 z-50 bg-white hover:bg-gray-100"
+        onClick={handleClose}
       >
         <X className="h-4 w-4" />
       </Button>

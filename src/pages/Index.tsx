@@ -12,6 +12,12 @@ const Index = () => {
       targetImage: "assets/patterns/target.mind",
       video: "assets/videos/video.mp4",
       title: "Démo AR"
+    },
+    {
+      id: 2,
+      targetImage: "assets/patterns/nouveau-trigger.mind",
+      video: "assets/videos/nouvelle-video.mp4",
+      title: "Nouvelle Démo"
     }
   ]);
 

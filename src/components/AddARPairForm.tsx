@@ -35,6 +35,13 @@ const AddARPairForm = () => {
         return;
       }
 
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("Vous devez être connecté pour créer une paire AR");
+        return;
+      }
+
       // Upload trigger file
       const triggerPath = `${crypto.randomUUID()}.mind`;
       const { error: triggerError } = await supabase.storage
@@ -73,7 +80,7 @@ const AddARPairForm = () => {
           trigger_image_url: triggerUrl.publicUrl,
           asset_url: videoUrl.publicUrl,
           asset_type: "video",
-          created_by: (await supabase.auth.getUser()).data.user?.id,
+          created_by: user.id,
         });
 
       if (dbError) {
@@ -110,7 +117,7 @@ const AddARPairForm = () => {
         <FormField
           control={form.control}
           name="triggerFile"
-          render={({ field: { onChange, value, ...field } }) => (
+          render={({ field: { onChange, ...field } }) => (
             <FormItem>
               <FormLabel>Image Trigger (.mind)</FormLabel>
               <FormControl>
@@ -129,7 +136,7 @@ const AddARPairForm = () => {
         <FormField
           control={form.control}
           name="videoFile"
-          render={({ field: { onChange, value, ...field } }) => (
+          render={({ field: { onChange, ...field } }) => (
             <FormItem>
               <FormLabel>Vidéo</FormLabel>
               <FormControl>

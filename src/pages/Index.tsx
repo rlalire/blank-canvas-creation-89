@@ -6,9 +6,12 @@ import ARPairsList from "@/components/ARPairsList";
 import AddARPairForm from "@/components/AddARPairForm";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
 
 const Index = () => {
   const [showAR, setShowAR] = useState(false);
+  const { data: session } = await supabase.auth.getSession();
 
   const { data: arPairs = [], isLoading } = useQuery({
     queryKey: ["ar_pairs"],
@@ -30,6 +33,25 @@ const Index = () => {
 
   if (showAR) {
     return <ARViewer pairs={arPairs} onClose={() => setShowAR(false)} />;
+  }
+
+  if (!session) {
+    return (
+      <div className="container mx-auto p-4 max-w-md">
+        <Card>
+          <CardHeader>
+            <CardTitle>Connexion requise</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Auth 
+              supabaseClient={supabase}
+              appearance={{ theme: ThemeSupa }}
+              theme="light"
+            />
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (

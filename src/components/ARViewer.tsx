@@ -16,7 +16,6 @@ interface ARViewerProps {
 
 const ARViewer = ({ pairs, onClose }: ARViewerProps) => {
   useEffect(() => {
-    // Injecter les scripts nécessaires
     const loadScripts = async () => {
       const aframeScript = document.createElement("script");
       aframeScript.src = "https://aframe.io/releases/1.6.0/aframe.min.js";
@@ -32,7 +31,6 @@ const ARViewer = ({ pairs, onClose }: ARViewerProps) => {
     loadScripts();
 
     return () => {
-      // Nettoyer les scripts lors du démontage
       const scripts = document.querySelectorAll("script");
       scripts.forEach(script => {
         if (script.src.includes("aframe") || script.src.includes("mind-ar")) {
@@ -43,7 +41,6 @@ const ARViewer = ({ pairs, onClose }: ARViewerProps) => {
   }, []);
 
   useEffect(() => {
-    // Configurer les événements AR après le chargement des scripts
     const setupAREvents = () => {
       const sceneEl = document.querySelector("a-scene");
       const videos = document.querySelectorAll("video");
@@ -59,7 +56,6 @@ const ARViewer = ({ pairs, onClose }: ARViewerProps) => {
       }
     };
 
-    // Attendre que les scripts soient chargés
     const checkScriptsLoaded = setInterval(() => {
       if (window.AFRAME && window.MINDAR) {
         setupAREvents();

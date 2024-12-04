@@ -110,7 +110,7 @@ const AddARPairForm = () => {
         <FormField
           control={form.control}
           name="triggerFile"
-          render={({ field: { onChange, ...field } }) => (
+          render={({ field: { onChange, value, ...field } }) => (
             <FormItem>
               <FormLabel>Image Trigger (.mind)</FormLabel>
               <FormControl>
@@ -129,7 +129,7 @@ const AddARPairForm = () => {
         <FormField
           control={form.control}
           name="videoFile"
-          render={({ field: { onChange, ...field } }) => (
+          render={({ field: { onChange, value, ...field } }) => (
             <FormItem>
               <FormLabel>Vidéo</FormLabel>
               <FormControl>

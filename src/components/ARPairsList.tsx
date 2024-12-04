@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface ARPair {
-  id: number;
+  id: string;  // Changed from number to string to match Supabase's UUID
   targetImage: string;
   video: string;
   title: string;

@@ -9,8 +9,8 @@ const Index = () => {
   const [arPairs] = useState([
     {
       id: 1,
-      targetImage: "assets/patterns/target.mind",
-      video: "assets/videos/video.mp4",
+      targetImage: "/assets/patterns/target.mind",
+      video: "/assets/videos/video.mp4",
       title: "Démo AR"
     }
   ]);

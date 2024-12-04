@@ -14,6 +14,7 @@ export type Database = {
           asset_type: string
           asset_url: string
           created_at: string
+          created_by: string
           id: string
           name: string
           trigger_image_url: string
@@ -22,6 +23,7 @@ export type Database = {
           asset_type: string
           asset_url: string
           created_at?: string
+          created_by: string
           id?: string
           name: string
           trigger_image_url: string
@@ -30,6 +32,7 @@ export type Database = {
           asset_type?: string
           asset_url?: string
           created_at?: string
+          created_by?: string
           id?: string
           name?: string
           trigger_image_url?: string

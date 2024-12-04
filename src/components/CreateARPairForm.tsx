@@ -15,16 +15,27 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface FormData {
   title: string;
-  targetImage: FileList;
-  video: FileList;
+  targetImage: FileList | null;
+  video: FileList | null;
 }
 
 const CreateARPairForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const form = useForm<FormData>();
+  const form = useForm<FormData>({
+    defaultValues: {
+      title: "",
+      targetImage: null,
+      video: null,
+    },
+  });
 
   const onSubmit = async (data: FormData) => {
     try {
+      if (!data.targetImage?.[0] || !data.video?.[0]) {
+        toast.error("Please select both a target image and a video");
+        return;
+      }
+
       setIsLoading(true);
 
       const targetImage = data.targetImage[0];
@@ -86,7 +97,7 @@ const CreateARPairForm = ({ onSuccess }: { onSuccess: () => void }) => {
         <FormField
           control={form.control}
           name="targetImage"
-          render={({ field: { onChange, ...field } }) => (
+          render={({ field: { onChange, value, ...field } }) => (
             <FormItem>
               <FormLabel>Target Image (.mind file)</FormLabel>
               <FormControl>
@@ -105,7 +116,7 @@ const CreateARPairForm = ({ onSuccess }: { onSuccess: () => void }) => {
         <FormField
           control={form.control}
           name="video"
-          render={({ field: { onChange, ...field } }) => (
+          render={({ field: { onChange, value, ...field } }) => (
             <FormItem>
               <FormLabel>Video</FormLabel>
               <FormControl>

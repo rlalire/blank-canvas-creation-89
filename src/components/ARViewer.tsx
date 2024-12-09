@@ -23,7 +23,6 @@ declare global {
 
 const ARViewer = ({ pairs, onClose }: ARViewerProps) => {
   useEffect(() => {
-    // Injecter les scripts nécessaires
     const loadScripts = async () => {
       console.log("Loading scripts...");
       const aframeScript = document.createElement("script");
@@ -55,7 +54,6 @@ const ARViewer = ({ pairs, onClose }: ARViewerProps) => {
   }, []);
 
   useEffect(() => {
-    // Configurer les événements AR après le chargement des scripts
     const setupAREvents = () => {
       console.log("Setting up AR events...");
       const sceneEl = document.querySelector("a-scene");
@@ -74,7 +72,6 @@ const ARViewer = ({ pairs, onClose }: ARViewerProps) => {
       }
     };
 
-    // Attendre que les scripts soient chargés
     const checkScriptsLoaded = setInterval(() => {
       if (window.AFRAME && window.MINDAR) {
         console.log("Scripts loaded, setting up AR...");
@@ -89,6 +86,10 @@ const ARViewer = ({ pairs, onClose }: ARViewerProps) => {
   console.log("AR Pairs:", pairs);
   console.log("Target Image URL:", pairs[0]?.targetImage);
 
+  // Ensure the target image URL is properly formatted
+  const targetImageUrl = new URL(pairs[0]?.targetImage).toString();
+  console.log("Formatted Target Image URL:", targetImageUrl);
+
   return (
     <div className="fixed inset-0 bg-black">
       <Button
@@ -101,7 +102,7 @@ const ARViewer = ({ pairs, onClose }: ARViewerProps) => {
       </Button>
 
       <a-scene
-        mindar-image={`imageTargetSrc: ${pairs[0].targetImage};`}
+        mindar-image={`imageTargetSrc: ${targetImageUrl};`}
         vr-mode-ui="enabled: false"
         device-orientation-permission-ui="enabled: false"
         className="fixed inset-0"
